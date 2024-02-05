@@ -77,9 +77,6 @@ export default function MovieScreen() {
                     Hikayesi, 5 harflik Latin palindromlarından biri olan Sator Karesi'ne dayanmaktadır. Eski Hristiyan kaynaklarında da yer alan bu palindromun en eski örnekleri Pompeii Harabeleri'nde bulunmuştur. Sator karesi'nin gizemi hala çözülememiştir.
                 </Text>
             </View>
-            <Text>
-                <Cast cast={cast}/>
-            </Text>
         </ScrollView>
     );
 }
