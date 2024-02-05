@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import Movies from '../components/Movies'
 import MovieList from '../components/MovieList'
 import { useNavigation } from '@react-navigation/native';
-import { fetchTrendingMovies } from '../api/moviedb';
+import { fetchMovies } from '../api/moviedb';
 
 export default function HomeScreen() {
     const [movies, setMovies] = useState([1, 2, 3]);
@@ -12,21 +12,24 @@ export default function HomeScreen() {
     const navigation = useNavigation();
 
     //checking api
-    useEffect(()=>{
-        getTrendingMovies();
-    },[])
-    const getTrendingMovies = async ()=>{
-        const data = await fetchTrendingMovies();
+    useEffect(() => {
+        getMovies();
+    }, [])
+    const getMovies = async () => {
+        const data = await fetchMovies();
         console.log('got trending movies: ', data);
+        if (data && data.results) setMovies(data.results);
     }
     return (
         <View style={{ flex: 1, backgroundColor: 'rgb(30, 33, 29)' }}>
             <SafeAreaView>
                 <StatusBar />
                 <View style={{ flexDirection: "row", justifyContent: "space-between", alignItems: "center", margin: 10 }}>
-                    <Image source={require('../assets/icons/user.png')} style={{
-                        height: 25, width: 25,
-                    }} />
+                    <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+                        <Image source={require('../assets/icons/user.png')} style={{
+                            height: 25, width: 25,
+                        }} />
+                    </TouchableOpacity>
                     <Text style={{ color: "rgb(31, 199, 155)", fontWeight: "700", fontSize: 24 }}>
                         <Text style={{ color: "white", fontWeight: "700" }}>Talh</Text>App
                     </Text>
@@ -38,10 +41,10 @@ export default function HomeScreen() {
                 </View>
             </SafeAreaView>
             <ScrollView
-                contentContainerStyle={{ paddingBottom: 25,alignItems:"center" }}
+                contentContainerStyle={{ paddingBottom: 25, alignItems: "center" }}
                 style={{}}>
-                <Movies data={movies} />
-                <Text style={{color: "rgb(142, 144, 143)"}}>Created at 02-05-2024 by. Talha Onder</Text>
+                {movies.length > 0 && <Movies data={movies} />}
+                <Text style={{ color: "rgb(142, 144, 143)" }}>Created at 02-05-2024 by. Talha Onder</Text>
             </ScrollView>
         </View>
     )

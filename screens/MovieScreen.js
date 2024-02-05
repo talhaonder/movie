@@ -1,23 +1,59 @@
 import { View, Text, ScrollView, TouchableOpacity, Image, SafeAreaView, StatusBar, Dimensions, Platform } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import cast from '../components/cast';
-import Cast from '../components/cast';
+import { fallbackMoviePoster, fetchMovieDetails, image500 } from '../api/moviedb';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 var { width, height } = Dimensions.get('window');
 const ios = Platform.OS == 'ios';
 const topMargin = ios ? '' : 'marginTop: 3';
 
 export default function MovieScreen() {
     const { params: item } = useRoute();
-    const [isFavourite, toggleFavourite] = useState(false);
+    const [isFavourite, setIsFavourite] = useState(false);
     const navigation = useNavigation();
-    const [cast, setCast] = useState([1, 2, 3, 4, 5]);
-    let movieName = 'T E N E T'
+    const [movie, setMovie] = useState({});
 
     useEffect(() => {
-        // Kodunuz useEffect için
+        getMovieDetails(item.id);
+        loadFavouriteStatus();
     }, [item]);
 
+    const getMovieDetails = async (id) => {
+        const data = await fetchMovieDetails(id);
+        if (data) setMovie(data);
+    };
+
+    const loadFavouriteStatus = async () => {
+        try {
+            const storedFavourites = await AsyncStorage.getItem('favourites');
+            if (storedFavourites) {
+                const favourites = JSON.parse(storedFavourites);
+                const isFavourite = favourites.includes(item.id);
+                setIsFavourite(isFavourite);
+            }
+        } catch (error) {
+            console.error('Error loading favourites:', error);
+        }
+    };
+
+    const toggleFavourite = async () => {
+        try {
+            const storedFavourites = await AsyncStorage.getItem('favourites');
+            let favourites = storedFavourites ? JSON.parse(storedFavourites) : [];
+
+            if (isFavourite) {
+                favourites = favourites.filter((id) => id !== item.id);
+            } else {
+                favourites.push(item.id);
+            }
+
+            await AsyncStorage.setItem('favourites', JSON.stringify(favourites));
+            setIsFavourite(!isFavourite);
+        } catch (error) {
+            console.error('Error toggling favourite:', error);
+        }
+    };
     return (
         <ScrollView
             contentContainerStyle={{ paddingBottom: 20 }}
@@ -46,22 +82,37 @@ export default function MovieScreen() {
                     </TouchableOpacity>
                 </SafeAreaView>
                 <View>
-                    <Image source={require('../assets/image/tenet.jpg')} style={{ width, height: height * 0.55 }} />
-                </View>
-                <View style={{ flex: 1, backgroundColor: 'rgb(21, 23, 22)', justifyContent: 'center', alignItems: 'center' }}>
+                    <Image
+                        source={{ uri: image500(movie?.poster_path)|| fallbackMoviePoster }}
+                        style={{ width, height: height * 0.77 }} />
                 </View>
             </View>
-            <View style={{ marginTop: -(height * 0.01), marginBottom: 12 }}>
+            <View style={{ marginTop: -(height * 0.001), marginBottom: 12 }}>
                 <Text style={{ color: "white", textAlign: "center", fontWeight: "bold", fontSize: 45 }}>
                     {
-                        movieName
+                        movie?.title
                     }
                 </Text>
-                <Text style={{ color: "rgb(129, 132, 128)", fontWeight: "400", fontSize: 20, textAlign: "center", marginTop: 5 }}>
-                    Released • 2020 • 160min
-                </Text>
+                {
+                    movie?.id ? (
+                        <Text style={{ color: "rgb(129, 132, 128)", fontWeight: "400", fontSize: 20, textAlign: "center", marginTop: 5 }}>
+                            {movie?.status} • {movie?.release_date?.split('-')[0]} • {movie?.runtime}min
+                        </Text>
+                    ) : null
+                }
+
                 <View style={{ flexDirection: "row", justifyContent: "center", marginLeft: 4, paddingLeft: 4 }}>
-                    <Text style={{ color: "rgb(129, 132, 128)", fontWeight: "400", fontSize: 20, textAlign: "center", marginTop: 5 }}>
+                    {
+                        movie?.genres?.map((genre, index) => {
+                            let showDot = index+1 != movie.genres.length;
+                            return (
+                                <Text key={index} style={{ color: "rgb(129, 132, 128)", fontWeight: "400", fontSize: 20, textAlign: "center", marginTop: 5, marginLeft: 5 }}>
+                                    {genre?.name} {showDot? "•":null} 
+                                </Text>
+                            )
+                        })
+                    }
+                    {/*<Text style={{ color: "rgb(129, 132, 128)", fontWeight: "400", fontSize: 20, textAlign: "center", marginTop: 5 }}>
                         Action •
                     </Text>
                     <Text style={{ color: "rgb(129, 132, 128)", fontWeight: "400", fontSize: 20, textAlign: "center", marginTop: 5, marginLeft: 4 }}>
@@ -69,12 +120,12 @@ export default function MovieScreen() {
                     </Text>
                     <Text style={{ color: "rgb(129, 132, 128)", fontWeight: "400", fontSize: 20, textAlign: "center", marginTop: 5, marginLeft: 4 }}>
                         Comedy
-                    </Text>
+                    </Text>*/}
                 </View>
                 <Text style={{ color: "rgb(129, 132, 128)", marginHorizontal: 20, letterSpacing: 2, marginTop: 15, }}>
-                    Tenet, Christopher Nolan’ın senaryosunu yazıp yönetmenliğini yaptığı; başrollerini John David Washington, Robert Pattinson, Elizabeth Debicki ve Kenneth Branagh’ın paylaştığı Birleşik Krallık ve Amerika Birleşik Devletleri ortak yapımı casus filmi. İlk kez 26 Ağustos 2020'de dünya genelinde 70 farklı ülkede vizyona girdi.[2]
-
-                    Hikayesi, 5 harflik Latin palindromlarından biri olan Sator Karesi'ne dayanmaktadır. Eski Hristiyan kaynaklarında da yer alan bu palindromun en eski örnekleri Pompeii Harabeleri'nde bulunmuştur. Sator karesi'nin gizemi hala çözülememiştir.
+                    {
+                        movie?.overview
+                    }
                 </Text>
             </View>
         </ScrollView>

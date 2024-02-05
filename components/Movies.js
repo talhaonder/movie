@@ -1,6 +1,7 @@
 import { View, Text, FlatList, TouchableOpacity, TouchableWithoutFeedback, Image, Dimensions } from 'react-native';
 import React from 'react';
 import { useNavigation } from '@react-navigation/native';
+import { fallbackMoviePoster, image500 } from '../api/moviedb';
 
 const { width, height } = Dimensions.get('window');
 
@@ -32,7 +33,8 @@ const MovieCard = ({ item, handleClick }) => {
     return (
         <TouchableWithoutFeedback onPress={()=>handleClick(item)}>
             <Image
-                source={require('../assets/image/inception.jpg')}
+                //source={require('../assets/image/inception.jpg')}
+                source={{uri: image500(item.poster_path) || fallbackMoviePoster}}
                 style={{
                     width: width * 0.7,
                     height: height * 0.6,
