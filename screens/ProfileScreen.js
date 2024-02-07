@@ -33,11 +33,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   backButton: {
-    marginRight: 10,
+    marginRight: 10
   },
   backIcon: {
     height: 25,
-    width: 25,
+    width: 25
   },
   headerText: {
     fontSize: 20,

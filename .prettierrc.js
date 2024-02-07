@@ -1,7 +1,8 @@
-module.exports = {
-  arrowParens: 'avoid',
-  bracketSameLine: true,
-  bracketSpacing: false,
+const config = {
+  trailingComma: "es5",
+  tabWidth: 4,
+  semi: false,
   singleQuote: true,
-  trailingComma: 'all',
 };
+
+export default config;
