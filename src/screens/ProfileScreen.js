@@ -13,7 +13,7 @@ const ProfileScreen = () => {
           style={styles.backButton}
         >
           <Image
-            source={require("../assets/icons/back.png")}
+            source={require("../../assets/icons/back.png")}
             style={styles.backIcon}
           />
         </TouchableOpacity>
@@ -21,7 +21,7 @@ const ProfileScreen = () => {
       </View>
       <View style={styles.profileContent}>
         <Image
-          source={require("../assets/icons/user.png")}
+          source={require("../../assets/icons/user.png")}
           style={styles.profileImage}
         />
       </View>

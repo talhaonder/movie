@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "React";
+import React, { useCallback, useState } from "react";
 import {
   View,
   StyleSheet,
@@ -13,7 +13,7 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { debounce } from "lodash";
-import { fallbackMoviePoster, image185, searchMovies } from "../api/moviedb";
+import { fallbackMoviePoster, image185, searchMovies } from "../../api/moviedb";
 
 const { width, height } = Dimensions.get("window");
 
@@ -59,7 +59,7 @@ const SearchScreen = () => {
           style={styles.backButton}
         >
           <Image
-            source={require("../assets/icons/back.png")}
+            source={require("../../assets/icons/back.png")}
             style={styles.backIcon}
           />
         </TouchableOpacity>
@@ -96,7 +96,7 @@ const SearchScreen = () => {
       ) : (
         <View style={styles.noResultsContainer}>
           <Image
-            source={require("../assets/image/movieTime.png")}
+            source={require("../../assets/image/movieTime.png")}
             style={styles.noResultsImage}
           />
         </View>

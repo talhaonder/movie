@@ -8,10 +8,9 @@ import {
   ScrollView,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import Movies from "../components/Movies";
-import MovieList from "../components/MovieList";
+import Movies from "../../components/Movies";
 import { useNavigation } from "@react-navigation/native";
-import { fetchMovies } from "../api/moviedb";
+import { fetchMovies } from "../../api/moviedb";
 
 export default function HomeScreen() {
   const [movies, setMovies] = useState([1, 2, 3]);
@@ -42,7 +41,7 @@ export default function HomeScreen() {
         >
           <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
             <Image
-              source={require("../assets/icons/user.png")}
+              source={require("../../assets/icons/user.png")}
               style={{
                 height: 25,
                 width: 25,
@@ -60,7 +59,7 @@ export default function HomeScreen() {
           </Text>
           <TouchableOpacity onPress={() => navigation.navigate("Search")}>
             <Image
-              source={require("../assets/icons/magnifying-glass.png")}
+              source={require("../../assets/icons/magnifying-glass.png")}
               style={{
                 height: 25,
                 width: 25,

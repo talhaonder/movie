@@ -1,9 +1,9 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeScreen from "../screens/HomeScreen";
-import MovieScreen from "../screens/MovieScreen";
-import SearchScreen from "../screens/SearchScreen";
-import ProfileScreen from "../screens/ProfileScreen";
+import HomeScreen from "../src/screens/HomeScreen";
+import MovieScreen from "../src/screens/MovieScreen";
+import SearchScreen from "../src/screens/SearchScreen";
+import ProfileScreen from "../src/screens/ProfileScreen";
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigation() {

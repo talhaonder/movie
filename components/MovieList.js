@@ -41,7 +41,7 @@ import {
             >
               <View style={{ margin: 4 }}>
                 <Image
-                  source={require("../assets/image/oppenheimer.jpg")}
+                  source={require("../../assets/image/oppenheimer.jpg")}
                   style={{
                     borderRadius: 25,
                     marginLeft: 4,
