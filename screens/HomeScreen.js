@@ -6,12 +6,12 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import Movies from '../components/Movies';
-import MovieList from '../components/MovieList';
-import {useNavigation} from '@react-navigation/native';
-import {fetchMovies} from '../api/moviedb';
+} from "react-native";
+import React, { useEffect, useState } from "react";
+import Movies from "../components/Movies";
+import MovieList from "../components/MovieList";
+import { useNavigation } from "@react-navigation/native";
+import { fetchMovies } from "../api/moviedb";
 
 export default function HomeScreen() {
   const [movies, setMovies] = useState([1, 2, 3]);
@@ -25,23 +25,24 @@ export default function HomeScreen() {
   }, []);
   const getMovies = async () => {
     const data = await fetchMovies();
-    console.log('got trending movies: ', data);
+    console.log("got trending movies: ", data);
     if (data && data.results) setMovies(data.results);
   };
   return (
-    <View style={{flex: 1, backgroundColor: 'rgb(30, 33, 29)'}}>
+    <View style={{ flex: 1, backgroundColor: "rgb(30, 33, 29)" }}>
       <SafeAreaView>
         <StatusBar />
         <View
           style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            alignItems: 'center',
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
             margin: 10,
-          }}>
-          <TouchableOpacity onPress={() => navigation.navigate('Profile')}>
+          }}
+        >
+          <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
             <Image
-              source={require('../assets/icons/user.png')}
+              source={require("../assets/icons/user.png")}
               style={{
                 height: 25,
                 width: 25,
@@ -50,15 +51,16 @@ export default function HomeScreen() {
           </TouchableOpacity>
           <Text
             style={{
-              color: 'rgb(31, 199, 155)',
-              fontWeight: '700',
+              color: "rgb(31, 199, 155)",
+              fontWeight: "700",
               fontSize: 24,
-            }}>
-            <Text style={{color: 'white', fontWeight: '700'}}>Talh</Text>App
+            }}
+          >
+            <Text style={{ color: "white", fontWeight: "700" }}>Talh</Text>App
           </Text>
-          <TouchableOpacity onPress={() => navigation.navigate('Search')}>
+          <TouchableOpacity onPress={() => navigation.navigate("Search")}>
             <Image
-              source={require('../assets/icons/magnifying-glass.png')}
+              source={require("../assets/icons/magnifying-glass.png")}
               style={{
                 height: 25,
                 width: 25,
@@ -68,10 +70,11 @@ export default function HomeScreen() {
         </View>
       </SafeAreaView>
       <ScrollView
-        contentContainerStyle={{paddingBottom: 25, alignItems: 'center'}}
-        style={{}}>
+        contentContainerStyle={{ paddingBottom: 25, alignItems: "center" }}
+        style={{}}
+      >
         {movies.length > 0 && <Movies data={movies} />}
-        <Text style={{color: 'rgb(142, 144, 143)'}}>
+        <Text style={{ color: "rgb(142, 144, 143)" }}>
           Created at 02-05-2024 by. Talha Onder
         </Text>
       </ScrollView>
