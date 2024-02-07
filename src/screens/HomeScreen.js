@@ -24,7 +24,6 @@ export default function HomeScreen() {
   }, []);
   const getMovies = async () => {
     const data = await fetchMovies();
-    console.log("got trending movies: ", data);
     if (data && data.results) setMovies(data.results);
   };
   return (

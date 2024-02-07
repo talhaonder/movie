@@ -1,4 +1,3 @@
-// actions.js
 import { ADD_FAVORITE, REMOVE_FAVORITE, TOGGLE_FAVORITE } from './types';
 
 export const addFavorite = (movieId) => ({

@@ -1,4 +1,3 @@
-// reducer.js
 import { ADD_FAVORITE, REMOVE_FAVORITE, TOGGLE_FAVORITE } from './types';
 
 const initialState = {
