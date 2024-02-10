@@ -16,36 +16,42 @@ import {
   fetchMovieDetails,
   image500,
 } from "../../api/moviedb";
-import { useSelector, useDispatch } from 'react-redux';
-import { toggleFavorite } from "../containers/Home/actions";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { toggleFavourite } from "../../redux/actions/likeAction";
+import { useDispatch, useSelector } from 'react-redux';
+
 
 var { width, height } = Dimensions.get("window");
 const ios = Platform.OS == "ios";
 const topMargin = ios ? "" : "marginTop: 3";
 
 export default function MovieScreen() {
-  const dispatch = useDispatch();
   const { params: item } = useRoute();
-  const favorites = useSelector((state) => state.favorite.favorites);
+  const dispatch = useDispatch();
+  const favourites = useSelector(state => state.favourites);
+  const isFavourite = favourites.includes(item.id);
   const navigation = useNavigation();
   const [movie, setMovie] = useState({});
-  const [isFavourite, setIsFavourite] = useState(false);
-
 
   useEffect(() => {
     getMovieDetails(item.id);
-    setIsFavourite(favorites.includes(item.id));
-  }, [favorites, item]);
+    loadFavouriteStatus();
+  }, [item]);
 
   const getMovieDetails = async (id) => {
     const data = await fetchMovieDetails(id);
     if (data) setMovie(data);
   };
 
-  const handleToggleFavorite = () => {
-    dispatch(toggleFavorite(item.id));
+  const FavouriteButton = ({ item }) => {
+    const dispatch = useDispatch();
+    const favourites = useSelector(state => state.favourites);
+    const isFavourite = favourites.includes(item.id);
+  
+    const handleToggleFavourite = () => {
+      dispatch(toggleFavourite(item.id));
+    };
   };
-
   return (
     <ScrollView
       contentContainerStyle={{ paddingBottom: 20 }}
@@ -71,12 +77,15 @@ export default function MovieScreen() {
               style={{ height: 25, width: 25 }}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleToggleFavorite}>
-            {isFavourite ? (
-              <Image source={require('../../assets/icons/like_filled.png')} style={{height: 25, width:25}} />
-            ) : (
-              <Image source={require('../../assets/icons/like_empty.png')} style={{height: 25, width:25}} />
-            )}
+          <TouchableOpacity onPress={handleToggleFavourite}>
+            <Image
+              source={
+                isFavourite
+                  ? require("../../assets/icons/like_filled.png")
+                  : require("../../assets/icons/like_empty.png")
+              }
+              style={{ height: 30, width: 30 }}
+            />
           </TouchableOpacity>
         </SafeAreaView>
         <View>
