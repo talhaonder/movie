@@ -1,3 +1,5 @@
+import React, { useEffect, useState } from "react";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import {
   View,
   Text,
@@ -9,27 +11,23 @@ import {
   Dimensions,
   Platform,
 } from "react-native";
-import React, { useEffect, useState } from "react";
-import { useNavigation, useRoute } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { toggleFavourite } from "../../redux/actions/likeAction";
+import { useDispatch, useSelector } from "react-redux";
 import {
   fallbackMoviePoster,
   fetchMovieDetails,
   image500,
 } from "../../api/moviedb";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { toggleFavourite } from "../../redux/actions/likeAction";
-import { useDispatch, useSelector } from 'react-redux';
-
 
 var { width, height } = Dimensions.get("window");
-const ios = Platform.OS == "ios";
-const topMargin = ios ? "" : "marginTop: 3";
 
 export default function MovieScreen() {
   const { params: item } = useRoute();
   const dispatch = useDispatch();
-  const favourites = useSelector(state => state.favourites);
+  const favourites = useSelector((state) => state.favourites);
   const isFavourite = favourites.includes(item.id);
+  
   const navigation = useNavigation();
   const [movie, setMovie] = useState({});
 
@@ -43,15 +41,14 @@ export default function MovieScreen() {
     if (data) setMovie(data);
   };
 
-  const FavouriteButton = ({ item }) => {
-    const dispatch = useDispatch();
-    const favourites = useSelector(state => state.favourites);
-    const isFavourite = favourites.includes(item.id);
-  
-    const handleToggleFavourite = () => {
-      dispatch(toggleFavourite(item.id));
-    };
+  const handleToggleFavourite = () => {
+    dispatch(toggleFavourite(item.id));
   };
+  
+  const loadFavouriteStatus = () => {
+    AsyncStorage.setItem('favourites', JSON.stringify([...favourites, item.id]));
+  };
+
   return (
     <ScrollView
       contentContainerStyle={{ paddingBottom: 20 }}
@@ -67,7 +64,7 @@ export default function MovieScreen() {
             flexDirection: "row",
             justifyContent: "space-between",
             position: "absolute",
-            paddingHorizontal: 16, // Gerekirse dolguyu ayarlayın
+            paddingHorizontal: 16,
             marginTop: 15,
           }}
         >
@@ -149,15 +146,6 @@ export default function MovieScreen() {
               </Text>
             );
           })}
-          {/*<Text style={{ color: "rgb(129, 132, 128)", fontWeight: "400", fontSize: 20, textAlign: "center", marginTop: 5 }}>
-                        Action •
-                    </Text>
-                    <Text style={{ color: "rgb(129, 132, 128)", fontWeight: "400", fontSize: 20, textAlign: "center", marginTop: 5, marginLeft: 4 }}>
-                        Thrill •
-                    </Text>
-                    <Text style={{ color: "rgb(129, 132, 128)", fontWeight: "400", fontSize: 20, textAlign: "center", marginTop: 5, marginLeft: 4 }}>
-                        Comedy
-                    </Text>*/}
         </View>
         <Text
           style={{
