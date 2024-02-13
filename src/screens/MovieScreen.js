@@ -1,33 +1,17 @@
-import React, { useEffect, useState } from "react";
-import { useNavigation, useRoute } from "@react-navigation/native";
-import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Image,
-  SafeAreaView,
-  StatusBar,
-  Dimensions,
-  Platform,
-} from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { toggleFavourite } from "../../redux/actions/likeAction";
-import { useDispatch, useSelector } from "react-redux";
-import {
-  fallbackMoviePoster,
-  fetchMovieDetails,
-  image500,
-} from "../../api/moviedb";
+import { View, Text, ScrollView, TouchableOpacity, Image, SafeAreaView, StatusBar, Dimensions, Platform, Button } from 'react-native';
+import React, { useEffect, useState, useContext } from 'react';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { fallbackMoviePoster, fetchMovieDetails, image500 } from '../../api/moviedb';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { HearthIcon } from 'react-native-heroicons/outline'
 
-var { width, height } = Dimensions.get("window");
+var { width, height } = Dimensions.get('window');
+const ios = Platform.OS == 'ios';
+const topMargin = ios ? '' : 'marginTop: 3';
 
 export default function MovieScreen() {
   const { params: item } = useRoute();
-  const dispatch = useDispatch();
-  const favourites = useSelector((state) => state.favourites);
-  const isFavourite = favourites.includes(item.id);
-  
+  const [isFavourite, setIsFavourite] = useState(false);
   const navigation = useNavigation();
   const [movie, setMovie] = useState({});
 
@@ -41,14 +25,36 @@ export default function MovieScreen() {
     if (data) setMovie(data);
   };
 
-  const handleToggleFavourite = () => {
-    dispatch(toggleFavourite(item.id));
-  };
-  
-  const loadFavouriteStatus = () => {
-    AsyncStorage.setItem('favourites', JSON.stringify([...favourites, item.id]));
+  const loadFavouriteStatus = async () => {
+    try {
+      const storedFavourites = await AsyncStorage.getItem('favourites');
+      if (storedFavourites) {
+        const favourites = JSON.parse(storedFavourites);
+        const isFavourite = favourites.includes(item.id);
+        setIsFavourite(isFavourite);
+      }
+    } catch (error) {
+      console.error('Error loading favourites:', error);
+    }
   };
 
+  const toggleFavourite = async () => {
+    try {
+      const storedFavourites = await AsyncStorage.getItem('favourites');
+      let favourites = storedFavourites ? JSON.parse(storedFavourites) : [];
+
+      if (isFavourite) {
+        favourites = favourites.filter((id) => id !== item.id);
+      } else {
+        favourites.push(item.id);
+      }
+
+      await AsyncStorage.setItem('favourites', JSON.stringify(favourites));
+      setIsFavourite(!isFavourite);
+    } catch (error) {
+      console.error('Error toggling favourite:', error);
+    }
+  };
   return (
     <ScrollView
       contentContainerStyle={{ paddingBottom: 20 }}
@@ -74,16 +80,8 @@ export default function MovieScreen() {
               style={{ height: 25, width: 25 }}
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={handleToggleFavourite}>
-            <Image
-              source={
-                isFavourite
-                  ? require("../../assets/icons/like_filled.png")
-                  : require("../../assets/icons/like_empty.png")
-              }
-              style={{ height: 30, width: 30 }}
-            />
-          </TouchableOpacity>
+          <Button onPress={toggleFavourite} title={isFavourite ? "Unlike" : "Like"} style={{width: 25, height: 25}} />
+
         </SafeAreaView>
         <View>
           <Image
